@@ -1,24 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import api from "./api";
+import { useState, useEffect } from "react";
+import Header from "./components/Header";
+import { Card, MainContainer, Sidebar } from "./styles";
+
+import GlobalStyle from "./styles/global";
 
 function App() {
+  const [pokemons, setPokemons] = useState([]);
+
+  const getPokemons = () => {
+    api.get("/").then((response) => setPokemons(response.data.results));
+  };
+
+  useEffect(() => getPokemons(), []);
+  console.log(pokemons);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <GlobalStyle />
+      <Header />
+      <Sidebar />
+      <MainContainer>
+        {pokemons.map(({ name }) => (
+          <Card key={name}>
+            <img
+              src={`https://img.pokemondb.net/sprites/black-white/normal/${name}.png`}
+            ></img>
+            <p>{name.toUpperCase({ name })}</p>
+          </Card>
+        ))}
+      </MainContainer>
+    </>
   );
 }
 
